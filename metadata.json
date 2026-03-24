@@ -1,0 +1,5 @@
+{
+  "name": "JT vs AI",
+  "description": "A competitive Tic-Tac-Toe game between JT and an AI opponent with a live leaderboard.",
+  "requestFramePermissions": []
+}
