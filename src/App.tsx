@@ -241,7 +241,7 @@ export default function App() {
             <Menu size={28} />
           </button>
           <a 
-            href="https://analytics.vgdh.io/gracedaniel224.vercel.app"
+            href="https://analytics.vgdh.io/grace-daniel224.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 hover:bg-white/10 rounded-lg transition-colors text-purple-500 flex items-center space-x-2"
@@ -316,7 +316,7 @@ export default function App() {
                       </div>
                     </button>
                     <a 
-                      href="https://analytics.vgdh.io/gracedaniel224.vercel.app"
+                      href="https://analytics.vgdh.io/grace-daniel224.vercel.app"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
