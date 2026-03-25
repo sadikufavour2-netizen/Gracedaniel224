@@ -5,20 +5,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Trophy, Send, RotateCcw, User, Cpu, Hash, Menu, X as CloseIcon, Volume2, VolumeX, Music, Music2, BarChart3, Activity, Zap, Users } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Trophy, Send, RotateCcw, User, Cpu, Hash, Menu, X as CloseIcon, Volume2, VolumeX, Music, Music2, BarChart3 } from "lucide-react";
+import { } from 'recharts';
 
 type Player = "X" | "O" | null;
-
-const WEEKLY_DATA = [
-  { day: 'Mon', visits: 12 },
-  { day: 'Tue', visits: 18 },
-  { day: 'Wed', visits: 15 },
-  { day: 'Thu', visits: 28 },
-  { day: 'Fri', visits: 14 },
-  { day: 'Sat', visits: 22 },
-  { day: 'Sun', visits: 24 },
-];
 
 const SOUNDS = {
   move: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
@@ -58,10 +48,6 @@ export default function App() {
     const saved = localStorage.getItem("jt-vs-ai-sfx");
     return saved ? JSON.parse(saved) : true;
   });
-  const [showAnalytics, setShowAnalytics] = useState(() => {
-    const saved = localStorage.getItem("jt-vs-ai-show-analytics");
-    return saved ? JSON.parse(saved) : true;
-  });
 
   const [bgMusic] = useState(() => new Audio(SOUNDS.music));
 
@@ -93,10 +79,6 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("jt-vs-ai-music", JSON.stringify(isMusicEnabled));
   }, [isMusicEnabled]);
-
-  useEffect(() => {
-    localStorage.setItem("jt-vs-ai-show-analytics", JSON.stringify(showAnalytics));
-  }, [showAnalytics]);
 
   const checkWinner = (squares: Player[]): Player | "Draw" => {
     const lines = [
@@ -258,13 +240,16 @@ export default function App() {
           >
             <Menu size={28} />
           </button>
-          <button 
-            onClick={() => setShowAnalytics(!showAnalytics)}
-            className={`p-2 rounded-lg transition-all ${showAnalytics ? "bg-purple-500/20 text-purple-500" : "hover:bg-white/10 text-white/40"}`}
-            title={showAnalytics ? "Hide Analytics" : "Show Analytics"}
+          <a 
+            href="https://analytics.vgdh.io/gracedaniel224.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-purple-500 flex items-center space-x-2"
+            title="View Analytics"
           >
             <BarChart3 size={24} />
-          </button>
+            <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">Analytics</span>
+          </a>
         </div>
         <div className="text-3xl font-black tracking-tighter text-purple-600 italic bg-black/50 backdrop-blur-md px-4 py-1 rounded-md border border-purple-900/30">
           VERSE
@@ -330,21 +315,18 @@ export default function App() {
                         />
                       </div>
                     </button>
-                    <button 
-                      onClick={() => setShowAnalytics(!showAnalytics)}
+                    <a 
+                      href="https://analytics.vgdh.io/gracedaniel224.vercel.app"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
                     >
                       <div className="flex items-center space-x-3">
-                        <BarChart3 size={20} className={showAnalytics ? "text-purple-500" : "opacity-30"} />
-                        <span className="text-sm font-bold">Show Analytics</span>
+                        <BarChart3 size={20} className="text-purple-500" />
+                        <span className="text-sm font-bold">View Analytics</span>
                       </div>
-                      <div className={`w-10 h-5 rounded-full relative transition-colors ${showAnalytics ? "bg-purple-600" : "bg-white/10"}`}>
-                        <motion.div 
-                          animate={{ x: showAnalytics ? 20 : 2 }}
-                          className="absolute top-1 left-0 w-3 h-3 bg-white rounded-full shadow-lg"
-                        />
-                      </div>
-                    </button>
+                      <Send size={16} className="opacity-30 -rotate-45" />
+                    </a>
                   </div>
                 </div>
 
@@ -402,122 +384,6 @@ export default function App() {
           <span>The Ultimate Challenge</span>
         </div>
       </motion.div>
-
-      {/* VERSE ANALYTICS DASHBOARD */}
-      <AnimatePresence>
-        {showAnalytics && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-            animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
-            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-            className="w-full max-w-md space-y-6 bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md overflow-hidden"
-          >
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <div className="flex items-center space-x-2">
-                <BarChart3 className="text-purple-500" size={20} />
-                <h2 className="text-sm font-black uppercase tracking-widest text-white italic">VERSE ANALYTICS</h2>
-              </div>
-              <button 
-                onClick={() => setShowAnalytics(false)}
-                className="p-1 hover:bg-white/10 rounded-md transition-colors text-white/30 hover:text-white"
-              >
-                <CloseIcon size={16} />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4">
-              {/* Total Reach */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
-                <div className="flex justify-between items-start">
-                  <div className="p-2 bg-purple-500/10 rounded-lg">
-                    <Users className="text-purple-500" size={18} />
-                  </div>
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">+12%</span>
-                </div>
-                <div className="mt-4">
-                  <div className="text-3xl font-black text-white">132</div>
-                  <div className="text-[10px] opacity-40 uppercase tracking-widest font-bold">Total Reach</div>
-                </div>
-              </div>
-
-              {/* Active Nodes */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
-                <div className="flex justify-between items-start">
-                  <div className="p-2 bg-purple-500/10 rounded-lg">
-                    <Activity className="text-purple-500" size={18} />
-                  </div>
-                  <div className="flex items-center space-x-1.5">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter">Live</span>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <div className="text-3xl font-black text-white">2</div>
-                  <div className="text-[10px] opacity-40 uppercase tracking-widest font-bold">Active Nodes</div>
-                </div>
-              </div>
-
-              {/* Total Events */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 relative overflow-hidden group">
-                <div className="flex justify-between items-start">
-                  <div className="p-2 bg-purple-500/10 rounded-lg">
-                    <Zap className="text-purple-500" size={18} />
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <div className="text-3xl font-black text-white">5</div>
-                  <div className="text-[10px] opacity-40 uppercase tracking-widest font-bold">Total Events</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Weekly Engagement Chart */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="text-[10px] opacity-40 uppercase tracking-widest font-bold">Weekly Engagement</div>
-                <div className="text-[10px] opacity-30 uppercase tracking-tighter font-bold">Last 7 Days</div>
-              </div>
-              
-              <div className="h-32 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={WEEKLY_DATA}>
-                    <Tooltip 
-                      cursor={{ fill: 'rgba(168, 85, 247, 0.1)' }}
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          return (
-                            <div className="bg-black border border-white/10 p-2 rounded-lg shadow-xl">
-                              <p className="text-[10px] font-bold text-white uppercase">{payload[0].payload.day}</p>
-                              <p className="text-xs font-black text-purple-500">visits : {payload[0].value}</p>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Bar dataKey="visits" radius={[4, 4, 0, 0]}>
-                      {WEEKLY_DATA.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={index === 6 ? '#3b82f6' : '#333333'} 
-                          className="transition-all duration-300 hover:fill-purple-500"
-                        />
-                      ))}
-                    </Bar>
-                    <XAxis 
-                      dataKey="day" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 'bold' }}
-                      dy={10}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Leaderboard */}
       <motion.div 
