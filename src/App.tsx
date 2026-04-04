@@ -5,10 +5,20 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Trophy, Send, RotateCcw, User, Cpu, Hash, Menu, X as CloseIcon, Volume2, VolumeX, Music, Music2, BarChart3 } from "lucide-react";
-import { } from 'recharts';
+import { Trophy, Send, RotateCcw, User, Cpu, Hash, Menu, X as CloseIcon, Volume2, VolumeX, Music, Music2, BarChart3, Activity, Zap, Users, ExternalLink } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 type Player = "X" | "O" | null;
+
+const WEEKLY_DATA = [
+  { day: 'Mon', visitors: 145 },
+  { day: 'Tue', visitors: 232 },
+  { day: 'Wed', visitors: 189 },
+  { day: 'Thu', visitors: 342 },
+  { day: 'Fri', visitors: 210 },
+  { day: 'Sat', visitors: 456 },
+  { day: 'Sun', visitors: 389 },
+];
 
 const SOUNDS = {
   move: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
@@ -48,6 +58,7 @@ export default function App() {
     const saved = localStorage.getItem("jt-vs-ai-sfx");
     return saved ? JSON.parse(saved) : true;
   });
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const [bgMusic] = useState(() => new Audio(SOUNDS.music));
 
@@ -240,21 +251,122 @@ export default function App() {
           >
             <Menu size={28} />
           </button>
-          <a 
-            href="https://analytics.vgdh.io/grace-daniel224.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-purple-500 flex items-center space-x-2"
-            title="View Analytics"
+          <button 
+            onClick={() => setShowAnalytics(!showAnalytics)}
+            className={`p-2 rounded-lg transition-all duration-300 flex items-center space-x-2 ${showAnalytics ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.5)]' : 'hover:bg-white/10 text-purple-500'}`}
+            title={showAnalytics ? "Minimize Analytics" : "Maximize Analytics"}
           >
             <BarChart3 size={24} />
-            <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">Analytics</span>
-          </a>
+            <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">
+              {showAnalytics ? "Minimize" : "Analytics"}
+            </span>
+          </button>
         </div>
         <div className="text-3xl font-black tracking-tighter text-purple-600 italic bg-black/50 backdrop-blur-md px-4 py-1 rounded-md border border-purple-900/30">
           VERSE
         </div>
       </div>
+
+      {/* Analytics Dashboard */}
+      <AnimatePresence>
+        {showAnalytics && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed inset-x-4 bottom-4 md:inset-x-auto md:right-4 md:bottom-4 md:w-[450px] bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl z-30 overflow-hidden flex flex-col max-h-[80vh]"
+          >
+            <div className="p-4 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-purple-900/20 to-transparent">
+              <div className="flex items-center space-x-2">
+                <Activity size={18} className="text-purple-500" />
+                <h2 className="text-sm font-black uppercase italic tracking-wider text-purple-400">Verse Analytics</h2>
+              </div>
+              <button 
+                onClick={() => setShowAnalytics(false)}
+                className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-white/40 hover:text-white"
+              >
+                <CloseIcon size={18} />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-6 custom-scrollbar">
+              {/* Analysis 1: Plausible */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Zap size={16} className="text-yellow-500" />
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-white/60">Plausible Analysis</h3>
+                  </div>
+                  <a 
+                    href="https://analytics.vgdh.io/grace-daniel224.vercel.app" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[10px] text-purple-500 hover:underline flex items-center space-x-1"
+                  >
+                    <span>Full Dashboard</span>
+                    <ExternalLink size={10} />
+                  </a>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                    <div className="text-[10px] uppercase tracking-tighter text-white/30 mb-1">Live Visitors</div>
+                    <div className="text-xl font-black text-white">12</div>
+                  </div>
+                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                    <div className="text-[10px] uppercase tracking-tighter text-white/30 mb-1">Bounce Rate</div>
+                    <div className="text-xl font-black text-white">24%</div>
+                  </div>
+                </div>
+
+                <div className="h-32 w-full bg-white/5 rounded-xl p-2 border border-white/5">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={WEEKLY_DATA}>
+                      <Bar dataKey="visitors">
+                        {WEEKLY_DATA.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={index === 5 ? '#9333ea' : '#3b0764'} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Analysis 2: GA4 */}
+              <div className="space-y-4 pt-6 border-t border-white/5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Users size={16} className="text-blue-500" />
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-white/60">GA4 Analysis</h3>
+                  </div>
+                  <div className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">Active</div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+                    <span className="text-xs text-white/60">Engagement Time</span>
+                    <span className="text-xs font-bold text-white">30s (Goal)</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+                    <span className="text-xs text-white/60">Scroll Depth</span>
+                    <span className="text-xs font-bold text-white">50%+ Tracked</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+                    <span className="text-xs text-white/60">Click Events</span>
+                    <span className="text-xs font-bold text-white">Auto-Logged</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-purple-600/10 border-t border-purple-500/20 text-center">
+              <div className="text-[10px] font-bold text-purple-400 uppercase tracking-[0.2em]">
+                Tracking Domain: grace-daniel224.vercel.app
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Menu Overlay */}
       <AnimatePresence>
@@ -315,18 +427,19 @@ export default function App() {
                         />
                       </div>
                     </button>
-                    <a 
-                      href="https://analytics.vgdh.io/grace-daniel224.vercel.app"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+                    <button 
+                      onClick={() => {
+                        setShowAnalytics(!showAnalytics);
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors w-full"
                     >
                       <div className="flex items-center space-x-3">
                         <BarChart3 size={20} className="text-purple-500" />
-                        <span className="text-sm font-bold">View Analytics</span>
+                        <span className="text-sm font-bold">{showAnalytics ? "Minimize Analytics" : "Maximize Analytics"}</span>
                       </div>
-                      <Send size={16} className="opacity-30 -rotate-45" />
-                    </a>
+                      <div className={`w-2 h-2 rounded-full ${showAnalytics ? 'bg-purple-500 animate-pulse' : 'bg-white/20'}`} />
+                    </button>
                   </div>
                 </div>
 

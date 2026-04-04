@@ -5,6 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JT vs AI | VERSE</title>
     <script defer data-domain="grace-daniel224.vercel.app" src="https://analytics.vgdh.io/js/script.outbound-links.js"></script>
+    <!-- Upgraded Google Analytics (GA4) for hub.vgdh.io -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BXLSZ79C9L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // Your GA4 ID
+      gtag('config', 'G-BXLSZ79C9L');
+
+      // ---------- TIME ENGAGEMENT (30 seconds) ----------
+      setTimeout(() => {
+        gtag('event', 'time_engaged', {
+          event_category: 'engagement',
+          event_label: 'Stayed 30 seconds'
+        });
+      }, 30000);
+
+      // ---------- SCROLL TRACKING (50%) ----------
+      let scrollTracked = false;
+      window.addEventListener('scroll', function() {
+        let scrollPercent = (window.scrollY + window.innerHeight) / document.body.scrollHeight * 100;
+        if(scrollPercent >= 50 && !scrollTracked) {
+          gtag('event', 'scroll', {
+            event_category: 'engagement',
+            event_label: 'Scrolled 50%+'
+          });
+          scrollTracked = true;
+        }
+      });
+
+      // ---------- CLICK TRACKING ----------
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('a, button').forEach(item => {
+          item.addEventListener('click', () => {
+            gtag('event', 'click', {
+              event_category: 'engagement',
+              event_label: item.innerText || item.id || 'unknown'
+            });
+          });
+        });
+      });
+
+      // ---------- VIRTUAL PAGEVIEW (for single-page sites) ----------
+      function trackVirtualPage(path) {
+        gtag('event', 'page_view', { page_path: path });
+      }
+
+      // Example:
+      // trackVirtualPage('/wallet-section');
+
+    </script>
   </head>
   <body>
     <div id="root"></div>
